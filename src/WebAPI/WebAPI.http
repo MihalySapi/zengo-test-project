@@ -1,0 +1,35 @@
+@WebAPI_HostAddress = http://localhost:5213
+
+GET {{WebAPI_HostAddress}}/counties/
+Accept: application/json
+
+###
+
+GET {{WebAPI_HostAddress}}/counties/5/cities
+Accept: application/json
+
+###
+
+POST {{WebAPI_HostAddress}}/counties/5/cities
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Hódmezővásárhely"
+}
+
+###
+
+Patch {{WebAPI_HostAddress}}/cities/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Hódmezővásárhely"
+}
+
+###
+
+Delete {{WebAPI_HostAddress}}/cities/1
+Content-Type: application/json
+Accept: application/json
