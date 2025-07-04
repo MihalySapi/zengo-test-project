@@ -15,7 +15,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "City@Name"
+    "name": "Hódmezővásárhely"
 }
 
 ###
@@ -25,7 +25,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "City@Name"
+    "name": "Hódmezővásárhely"
 }
 
 ###
