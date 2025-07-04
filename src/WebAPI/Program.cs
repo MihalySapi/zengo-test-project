@@ -35,6 +35,17 @@ builder.Services.AddDbContext<LocationDb>(opt =>
         await context.SaveChangesAsync(cancellationToken);
     });
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddScoped<LocationRegistry>();
 
 builder.Services.AddHealthChecks();
@@ -44,6 +55,8 @@ builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 #region App Configuration
+
+app.UseCors("AllowReactApp");
 
 // Initialize DB content
 await using (var serviceScope = app.Services.CreateAsyncScope())
@@ -69,6 +82,7 @@ app.UseExceptionHandler(appError =>
         if (exceptionHandlerFeature?.Error?.InnerException is not SqliteException) { return; }
 
         var problemDetailsService = context.RequestServices.GetRequiredService<IProblemDetailsService>();
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
 
         await problemDetailsService.TryWriteAsync(
             new ProblemDetailsContext 
@@ -96,7 +110,7 @@ app.MapGet("/counties", async (LocationRegistry locations) =>
     return Results.Ok(response);
 });
 
-app.MapGet("/counties/{countyId}/cities", async ([BindRequired]int countyId, LocationRegistry locations) =>
+app.MapGet("/counties/{countyId}/cities", async (int countyId, LocationRegistry locations) =>
 {
     County? county = await locations.GetAsync<County>(countyId);
     if (county == null) { return Results.NotFound(); }
@@ -107,7 +121,7 @@ app.MapGet("/counties/{countyId}/cities", async ([BindRequired]int countyId, Loc
     return Results.Ok(response);
 });
 
-app.MapPost("/counties/{countyId}/cities", async ([BindRequired]int countyId, [FromBody]CreateCityRequest request, LocationRegistry locations) =>
+app.MapPost("/counties/{countyId}/cities", async (int countyId, [FromBody]CreateCityRequest request, LocationRegistry locations) =>
 {
     County? county = await locations.GetAsync<County>(countyId);
     if (county == null) { return Results.NotFound(); }
@@ -122,7 +136,7 @@ app.MapPost("/counties/{countyId}/cities", async ([BindRequired]int countyId, [F
     return Results.Created($"/cities/{city.Id}", ResponseFactory.CreateCityResponse(city));
 });
 
-app.MapPatch("/cities/{cityId}", async ([BindRequired]int cityId, [FromBody]UpdateCityRequest request, LocationRegistry locations) =>
+app.MapPatch("/cities/{cityId}", async (int cityId, [FromBody]UpdateCityRequest request, LocationRegistry locations) =>
 {    
     City? city = await locations.GetAsync<City>(cityId);
     if (city == null) { return Results.NotFound(); }
@@ -131,7 +145,7 @@ app.MapPatch("/cities/{cityId}", async ([BindRequired]int cityId, [FromBody]Upda
     return Results.NoContent();
 });
 
-app.MapDelete("/cities/{cityId}", async ([BindRequired]int cityId, LocationRegistry locations) =>
+app.MapDelete("/cities/{cityId}", async (int cityId, LocationRegistry locations) =>
 {
     City? city = await locations.GetAsync<City>(cityId);
     if (city == null) { return Results.NotFound(); }
