@@ -1,5 +1,3 @@
-// src/hooks/queries.ts
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { citiesApi } from "../api/citiesApi";
 import { countiesApi } from "../api/countiesApi";

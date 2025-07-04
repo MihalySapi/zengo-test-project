@@ -1,8 +1,6 @@
 import fetchApi from "./api";
 import type { County } from "./models";
 
-// County API calls
-
 export const countiesApi = {
     getAll: async (): Promise<County[]> => {
         const response = await fetchApi(`/counties`);
