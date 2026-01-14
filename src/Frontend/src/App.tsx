@@ -108,7 +108,7 @@ function App() {
               mb: 4
             }}
           >
-            Város Kezelő Alkalmazás
+          Zengo - Város Kezelő Alkalmazás
           </Typography>
           
           <CountySelector
