@@ -108,7 +108,7 @@ function App() {
               mb: 4
             }}
           >
-            Város Kezelő Alkalmazás - 0.2
+            Város Kezelő Alkalmazás - 0.3
           </Typography>
           
           <CountySelector
